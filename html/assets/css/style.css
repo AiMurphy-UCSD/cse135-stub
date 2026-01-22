@@ -1,0 +1,605 @@
+/* ==== Google Font ==== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ==== CSS Variables ==== */
+:root {
+  --accent: #4070F4;
+  --bg: #ffffff;
+  --text: #000000;
+}
+
+[data-theme="dark"] {
+    --bg: #0d0d0d;
+    --text: #ffffff;
+    --accent: #4070F4;
+}
+
+/* Turn cross-document view-transitions on */
+/* Note that this at-rule is all that is needed to create the default cross-fade animation  */
+
+@view-transition {
+    navigation: auto;
+}
+
+/* Give the main content its own transition layer */
+main {
+  view-transition-name: maincontent;
+}
+
+/* Prevent header/nav/footer from being animated */
+header,
+nav,
+footer {
+  view-transition-name: none;
+}
+
+/* Customize the default animation behavior */
+
+::view-transition-group(maincontent) {
+    animation-duration: 0.5s;
+}
+
+/* Create a custom animation */
+
+@keyframes move-out {
+    from {
+        opacity: 100%;
+    }
+
+    to {
+        opacity: 0%;
+    }
+}
+
+@keyframes move-in {
+    from {
+        opacity: 0%;
+    }
+
+    to {
+        opacity: 100%;
+    }
+}
+
+/* Apply the custom animation to the old and new page states */
+
+::view-transition-old(maincontent) {
+    animation: 0.4s ease-out both move-out;
+
+}
+
+::view-transition-new(maincontent) {
+    animation: 1.0s ease-in both move-in;
+}
+
+
+/* ==== Base ==== */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  min-height: 100dvh;
+}
+
+body {
+  margin: clamp(.75rem, 2vw, 2rem) clamp(1rem, 4vw, 3rem);
+}
+
+:visited{
+    color: var(--text);
+}
+
+/* ==== NAV ==== */
+header {
+  nav ul {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: clamp(.65rem, 1.5vw, 1.25rem);
+
+    li {
+      display: inline-flex;
+
+      a, a:link {
+        color: var(--text);
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        color: var(--text);
+        &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px; /* how far below the text the line sits */
+        width: 0%;
+        height: 2px;
+        background: var(--accent);
+        transition: width .2s ease;
+      }
+
+        &:hover {
+          color: var(--accent);
+          transition: color .2s ease;
+        }
+        &:hover::after {
+          width: 100%; 
+        }
+      }
+    }
+
+    li:first-child {
+      margin-right: auto;
+      font-weight: 800;
+    }
+
+    #mode {
+      width: clamp(.9rem, 1.9vw, 1.4rem);
+      height: clamp(.9rem, 1.9vw, 1.4rem);
+      background: url("assets/darkmode.webp") no-repeat center / cover;
+      border:none;
+      cursor:pointer;
+      background-color:transparent;
+      position: relative;
+    }
+    #mode:hover {
+      filter: brightness(0) saturate(100%) invert(32%) sepia(100%) saturate(3500%) hue-rotate(210deg);
+    }
+    #mode::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0%;
+      height: 2px;
+      background: var(--accent);
+      transition: width .2s ease;
+    }
+
+    #mode:hover::after {
+      width: 100%;
+    }
+
+  }
+
+}
+    /*When dark theme is active, swap icon */
+    [data-theme="dark"] #mode {
+      background: url("assets/lightmode.webp") no-repeat center / cover;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Dark mode overrides for form fields */
+    [data-theme="dark"] input,
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] select {
+        color: #000 !important;           /* Text inside inputs becomes black */
+      
+        border-color: #444;                /* Darker border for contrast */
+    }
+
+  /* Hide JS-only elements when JS is off */
+.js-only {
+    display: none;
+}
+
+/* ==== MAIN SECTIONS ==== */
+main {
+  margin: clamp(.75rem, 2vw, 2rem) clamp(1rem, 4vw, 3rem);
+}
+
+#intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items:center;
+  justify-items:center;
+  gap: clamp(1rem, 4vw, 3rem);
+  margin-top: clamp(4rem, 15vw, 10rem);
+}
+
+#intro article {
+  text-align:center;
+}
+
+#intro article h1 {
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-weight:800;
+  margin:0;
+}
+
+#intro article p {
+  font-size: clamp(1rem, 1.5vw, 1rem);
+  font-weight:300;
+  margin:1rem 0;
+}
+
+#intro article p#subtitle {
+  font-style:italic;
+  word-spacing: clamp(.3rem, 1.3vw, .8rem);
+  letter-spacing: clamp(.1rem, 1.1vw, .6rem);
+}
+#intro article p#socials{
+  margin-top: clamp(1rem, 2vw, 3rem);
+  word-spacing: clamp(.3rem, 5vw, 5rem);
+  
+}
+
+#intro article p#socials a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Portrait square */
+.portrait {
+  background: var(--accent);
+  width: clamp(250px, 30vw, 450px);
+  height: clamp(250px, 30vw, 450px);
+  border-radius: 1rem;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.portrait picture img {
+  width: clamp(200px, 20vw, 400px);
+  height: clamp(200px, 20vw, 400px);
+  border-radius:1rem;
+}
+
+/* About */
+#about {
+  margin-top: clamp(4rem, 15vw, 10rem);
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: clamp(250px, 70dvw, 1000px); /* same max width as your p */
+}
+
+#about h2 {
+  font-size: clamp(2rem, 10vw, 6rem);
+  text-align:center;
+  justify-self: center;
+  margin-top: clamp(4rem, 15vw, 15rem);
+}
+
+#about p {
+  margin-top: clamp(4rem, 15dvw, 1rem);
+  font-size: clamp(1rem, 2.5dvw, 1.875rem);
+  text-align:center;
+  justify-self: center;
+  max-width: clamp(250px, 70dvw, 1000px);
+}
+
+/* FOOTER */
+footer {
+  margin-top: clamp(4rem, 15vw, 10rem);
+  font-size: clamp(.75rem, 1.25vw, 1rem);
+  text-align:center;
+}
+
+
+/* ==== Resume ==== */
+#rtitle {
+  text-align: center;                          /* force left align */
+  font-size: clamp(3rem, 12vw, 8rem);        /* dramatic hero scale */
+  margin-top: clamp(2rem, 10vw, 4rem);       /* slightly smaller top offset */
+  margin-left: 0; 
+}
+
+/* === Resume 2-column layout === */
+#resume-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* equal columns */
+  align-items: center;              /* vertically center */
+  justify-items: center;            /* horizontally center */
+  gap: clamp(1rem, 4vw, 3rem);
+  margin-top: clamp(2rem, 10vw, 4rem);
+}
+
+/* button styling inside the grid */
+#resume-content button {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(.75rem, 2vw, 1.25rem) clamp(1.2rem, 3vw, 2.5rem);
+  background: var(--accent);
+  border: none;
+  border-radius: .8rem;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  transition: transform .2s ease;
+}
+
+#resume-content button:hover {
+  transform: scale(1.05);
+}
+
+/* iframe styling */
+#resume-content iframe {
+  width: clamp(260px, 40dvw, 600px);
+  height: clamp(300px, 50dvw, 800px);
+  border-radius: 1rem;
+  border: none;
+}
+
+/* ==== Contact ==== */
+#ctitle {
+  text-align: center;                          /* force left align */
+  font-size: clamp(3rem, 12vw, 8rem);        /* dramatic hero scale */
+  margin-top: clamp(2rem, 10vw, 4rem);       /* slightly smaller top offset */
+  margin-left: 0; 
+}
+
+section#contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* the form */
+form {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* fieldset is the form box */
+form fieldset {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  width: clamp(260px, 40vw, 500px); /* responsive form width */
+}
+
+/* text styling */
+form label {
+  margin-top: 3dvh;
+  margin-bottom: 1dvh;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
+input, textarea {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(.5rem, 1.5vw, .75rem);
+  border-radius: .5rem;
+  border: 1px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+  margin-bottom: .5dvh;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+
+/**/ 
+
+/* Highlight invalid fields */
+input:invalid,
+textarea:invalid {
+  border: 2px solid #d33;
+  background-color: #ffe5e5;
+}
+
+/* Highlight valid fields */
+input:valid,
+textarea:valid {
+  border: 2px solid #3a9f3a;
+  background-color: #e9ffe9;
+}
+
+/* Placeholder styling */
+input:placeholder-shown:invalid,
+textarea:placeholder-shown:invalid {
+  background-color: var(--bg);
+  border: 1px solid var(--text);
+}
+
+/* Required asterisk styling */
+label span {
+  color: #d33;
+  font-weight: bold;
+}
+
+/* Output areas */
+#error-output {
+  color: #d33;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
+}
+
+#info-output {
+  color: #3a9f3a;
+  font-size: 0.9rem;
+  min-height: 1.2rem;
+}
+
+.flash-error {
+  animation: flash 0.3s ease-in-out;
+}
+
+@keyframes flash {
+  0% { background-color: #ffdddd; }
+  100% { background-color: var(--bg); }
+}
+
+#char-counter {
+  font-size: 0.9rem;
+}
+
+/**/
+
+
+legend{
+  text-align: center;
+}
+
+/* submit button */
+form button {
+  padding: clamp(.75rem, 2vw, 1.25rem) clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--accent);
+  border: none;
+  border-radius: .8rem;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  align-self: center;
+  transition: transform .2s ease;
+}
+
+form button:hover {
+  transform: scale(1.05);
+}
+
+/* ==== Projects ==== */
+#ptitle {
+  text-align: center;                          /* force left align */
+  font-size: clamp(3rem, 12vw, 8rem);        /* dramatic hero scale */
+  margin-top: clamp(2rem, 10vw, 4rem);       /* slightly smaller top offset */
+  margin-left: 0; 
+}
+#project-content {
+    display: flexbox;
+    align-items: center;              /* vertically center */
+    justify-items: center;            /* horizontally center */
+    gap: clamp(1rem, 4vw, 3rem);
+    margin-top: clamp(2rem, 10vw, 4rem);
+
+    h3 {
+        text-align: center;                          /* force left align */
+        font-size: clamp(2rem, 11vw, 7rem);        /* dramatic hero scale */
+        margin-top: clamp(2rem, 10vw, 4rem);       /* slightly smaller top offset */
+        margin-left: 0; 
+        margin-bottom: 0;
+    }
+
+    p {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      text-align: center;
+      font-weight: 300;
+      justify-self: center;
+      max-width: 1000px;
+    }
+    picture img {
+        display:flex;
+        justify-self:center;
+        align-items:center;
+        width: clamp(10rem, 20dvw, 30rem);
+        height: clamp(10rem, 20dvw, 30rem);
+    }
+    iframe {
+      display:flex;
+      justify-self:center;
+      align-items:center;
+      width: clamp(20rem, 30dvw, 40rem);
+      height: clamp(20rem, 30dvw, 40rem);
+      border-radius: 1rem;
+      border: none;
+    }
+}
+
+#noJS-warning p{
+    padding: 1rem;
+    margin: 1rem 0;
+    background: #ffdddd;
+    color: #300;
+    border: 1px solid #aa0000;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+
+
+/* ===========================
+   MOBILE LAYOUT FIXES (≤900px)
+   =========================== */
+@media (max-width: 900px) {
+
+  body {
+    margin: 1rem;
+  }
+
+  /* INTRO SECTION */
+  #intro {
+    grid-template-columns: 1fr; 
+    margin-top: 3rem;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .portrait {
+    width: 70vw;
+    height: 70vw;
+    margin-inline: auto;
+  }
+
+  .portrait picture img {
+    width: 65vw;
+    height: 65vw;
+  }
+
+  /* ABOUT SECTION */
+  #about {
+    margin-top: 4rem;
+    padding-inline: 1rem;
+  }
+
+  #about p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  /* RESUME SECTION */
+  #resume-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  #resume-content iframe {
+    width: 90vw;
+    height: 70vh;
+  }
+
+  /* CONTACT SECTION */
+  #contact-form {
+    text-align: center;
+    padding-inline: 1rem;
+  }
+
+  form fieldset {
+    width: 90vw;
+  }
+
+  /* PROJECTS SECTION */
+  #project-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  #project-content picture img {
+    width: 80vw;
+    height: auto;
+  }
+
+  #project-content iframe {
+    width: 90vw;
+    height: 50vh;
+  }
+
+  /* Reduce huge top margins across the site */
+  h1, h2 {
+    margin-top: 2.5rem !important;
+  }
+
+  section {
+    justify-items: center;
+  }  
+}
