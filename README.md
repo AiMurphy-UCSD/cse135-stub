@@ -8,3 +8,7 @@ This allows fully automatic deployment from GitHub to the live site without manu
 <br>
 username: grader
 password: UCSD1234
+<br>
+## Compression Verification (mod_deflate)
+<br>
+I enabled Apache’s mod_deflate so that textual assets are served using gzip compression. In Chrome DevTools, my HTML/CSS responses include the header Content-Encoding: gzip, confirming the server is compressing them. DevTools also shows that the Transferred size is smaller than the Resource size for these files, indicating that compressed data was sent over the network and decompressed by the browser.
