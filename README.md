@@ -30,3 +30,5 @@ I enabled Apache’s mod_deflate so that textual assets are served using gzip co
 ## Obscure Server Identity
 <br>
 I initially attempted to override the Server header using Apache mod_headers, but Apache still returned Server: Apache/2.4.58 (Ubuntu) because the Server header is generated internally and isn’t reliably overridden via Header set. I then installed mod_security2 and configured SecServerSignature "CSE135 Server" to replace the server banner. Verified in curl/DevTools that responses now include Server: CSE135 Server.
+
+
