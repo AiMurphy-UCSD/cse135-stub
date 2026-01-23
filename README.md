@@ -1,3 +1,17 @@
+## Members:
+<br>
+Aidan Murphy
+<br>
+## Apache Login For Grader:
+<br>
+user: grader
+<br>
+password: UCSD1234
+<br>
+## Link to Site
+<br>
+https://aidanmurphy.site/
+<br>
 ## Github Deployment:
 <br>
 This project uses a GitHub webhook-based deployment pipeline. All site code lives in a GitHub repository. The server maintains its own clone of the repository in /var/repo/. When code is pushed to GitHub, a webhook sends a signed HTTPS request to the server. 
@@ -7,7 +21,7 @@ This allows fully automatic deployment from GitHub to the live site without manu
 ## Team Stub Site Login:
 <br>
 username: grader
-password: UCSD1234
+password: 1234
 <br>
 ## Compression Verification (mod_deflate)
 <br>
