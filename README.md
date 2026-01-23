@@ -12,3 +12,7 @@ password: UCSD1234
 ## Compression Verification (mod_deflate)
 <br>
 I enabled Apache’s mod_deflate so that textual assets are served using gzip compression. In Chrome DevTools, my HTML/CSS responses include the header Content-Encoding: gzip, confirming the server is compressing them. DevTools also shows that the Transferred size is smaller than the Resource size for these files, indicating that compressed data was sent over the network and decompressed by the browser.
+<br>
+## Obscure Server Identity
+<br>
+I initially attempted to override the Server header using Apache mod_headers, but Apache still returned Server: Apache/2.4.58 (Ubuntu) because the Server header is generated internally and isn’t reliably overridden via Header set. I then installed mod_security2 and configured SecServerSignature "CSE135 Server" to replace the server banner. Verified in curl/DevTools that responses now include Server: CSE135 Server.
