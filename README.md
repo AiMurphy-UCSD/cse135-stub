@@ -27,20 +27,12 @@ I initially attempted to override the `Server` header using Apache `mod_headers`
 `SecServerSignature "CSE135 Server"`  
 to replace the server banner. Verification using curl and Chrome DevTools confirms that responses now include:
 
+## Free Choice Analytics (GoatCounter)
+GoatCounter is a privacy-first, lightweight analytics platform designed as an alternative to heavy, invasive trackers like Google Analytics. Its most unique feature is that it does not use cookies, does not fingerprint users, and does not track individuals across sites, making it compliant with privacy regulations (such as GDPR) by default.
 
+Unlike session-replay or behavior-profiling tools, GoatCounter focuses on simple, aggregate metrics—page views, referrers, browsers, and basic usage trends—without collecting personal data. It also has a very small script size, minimal performance impact, and can be self-hosted, which gives developers full control over their analytics data.
 
-![initial-index](https://github.com/user-attachments/assets/acf61d22-aae0-46ea-9d08-038c1a506531)
-![modified-index](https://github.com/user-attachments/assets/b8db685a-e4a4-4797-8134-3c1f138ec06a)
-![validator-initial](https://github.com/user-attachments/assets/b49bb8a9-2a73-4afb-844b-bfcc4c87ee58)
-![vhosts-verify](https://github.com/user-attachments/assets/af81a8a1-ec5b-4e2e-bf9a-117e19df5126)
-![SSL-verify](https://github.com/user-attachments/assets/13c7b597-2d3f-4b92-af10-ac66dab557f8)
-https://github.com/user-attachments/assets/fefdb9b3-af04-4d56-84be-9ff05da97435
-![php-verification](https://github.com/user-attachments/assets/465df2e2-35ec-4174-ad01-e19d95f42c28)
-![compress-verify](https://github.com/user-attachments/assets/2f8a44f4-2286-45b2-8c63-0d8a31121238)
-![header-verify](https://github.com/user-attachments/assets/bd3b511d-141c-477e-aede-bafce7f139a1)
-![error-page](https://github.com/user-attachments/assets/c1347459-c046-4f32-b597-01d5a635b834)
-![log-verification](https://github.com/user-attachments/assets/864d5456-4386-4334-a88a-25cf4c9e1e5e)
-![report-verification](https://github.com/user-attachments/assets/177e66af-98dd-4434-a8a3-ed141168251f)
+Overall, GoatCounter is a strong choice when privacy, transparency, simplicity, and low overhead are more important than deep behavioral tracking, making it a good contrast to tools like Google Analytics and LogRocket.
 
 
 
