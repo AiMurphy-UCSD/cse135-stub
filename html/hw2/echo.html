@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>HW2 Echo Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <h1>HW2 Echo Form</h1>
+
+  <p>
+    No-JS fallback: use the GET/POST forms below.
+    With JS enabled, you can also use PUT/DELETE and JSON encoding.
+  </p>
+
+  <h2>Enhanced Form (JS)</h2>
+  <form id="enhancedForm">
+    <label>
+      Language:
+      <select id="lang">
+        <option value="php">PHP</option>
+        <option value="python">Python</option>
+        <option value="go">Go</option>
+      </select>
+    </label>
+    <br><br>
+
+    <label>
+      Method:
+      <select id="method">
+        <option>GET</option>
+        <option>POST</option>
+        <option>PUT</option>
+        <option>DELETE</option>
+      </select>
+    </label>
+    <br><br>
+
+    <label>
+      Encoding:
+      <select id="encoding">
+        <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+        <option value="application/json">application/json</option>
+      </select>
+    </label>
+    <br><br>
+
+    <label>Field A: <input id="fieldA" name="fieldA" value="hello"></label><br>
+    <label>Field B: <input id="fieldB" name="fieldB" value="world"></label><br><br>
+
+    <button type="submit">Send</button>
+  </form>
+
+  <h3>Response</h3>
+  <pre id="out">(submit to see response)</pre>
+
+  <hr>
+
+  <h2>No-JS Fallback (GET)</h2>
+  <form method="GET" action="/cgi-bin/php/echo-php.php">
+    <input name="fieldA" value="hello">
+    <input name="fieldB" value="world">
+    <button type="submit">Send GET to PHP</button>
+  </form>
+
+  <h2>No-JS Fallback (POST)</h2>
+  <form method="POST" action="/cgi-bin/php/echo-php.php">
+    <input name="fieldA" value="hello">
+    <input name="fieldB" value="world">
+    <button type="submit">Send POST to PHP</button>
+  </form>
+
+  <script>
+    function endpointFor(lang) {
+      if (lang === "php") return "/cgi-bin/php/echo-php.php";
+      if (lang === "python") return "/cgi-bin/python/echo-python.py";
+      return "/cgi-bin/go/echo-go";
+    }
+
+    document.getElementById("enhancedForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const lang = document.getElementById("lang").value;
+      const method = document.getElementById("method").value;
+      const encoding = document.getElementById("encoding").value;
+
+      const fieldA = document.getElementById("fieldA").value;
+      const fieldB = document.getElementById("fieldB").value;
+
+      const url = new URL(endpointFor(lang), window.location.origin);
+
+      let fetchOpts = { method, headers: {} };
+
+      if (method === "GET") {
+        url.searchParams.set("fieldA", fieldA);
+        url.searchParams.set("fieldB", fieldB);
+      } else {
+        if (encoding === "application/json") {
+          fetchOpts.headers["Content-Type"] = "application/json";
+          fetchOpts.body = JSON.stringify({ fieldA, fieldB });
+        } else {
+          fetchOpts.headers["Content-Type"] = "application/x-www-form-urlencoded";
+          fetchOpts.body = new URLSearchParams({ fieldA, fieldB }).toString();
+        }
+      }
+
+      const res = await fetch(url.toString(), fetchOpts);
+      const text = await res.text();
+      document.getElementById("out").textContent = text;
+    });
+  </script>
+</body>
+</html>
