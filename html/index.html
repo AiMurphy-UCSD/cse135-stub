@@ -13,6 +13,15 @@
   <!-- LogRocket -->
   <script src="https://cdn.logr-in.com/LogRocket.min.js" crossorigin="anonymous"></script>
   <script>window.LogRocket && window.LogRocket.init(i3admo/aidanmurphysite);</script>
+  <script>
+    LogRocket.getSessionURL(function (sessionURL) {
+  ga('send', {
+    hitType: 'event',
+    eventCategory: 'LogRocket',
+    eventAction: sessionURL,
+  });
+  });
+    </script>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
