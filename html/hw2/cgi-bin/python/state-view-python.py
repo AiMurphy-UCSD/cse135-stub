@@ -1,23 +1,31 @@
 #!/usr/bin/env python3
-import os, urllib.parse
+import os
+import urllib.parse
 
-cookie = os.environ.get("HTTP_COOKIE", "")
-val = "(not set)"
-for part in cookie.split(";"):
-    part = part.strip()
-    if part.startswith("hw2_state="):
-        val = urllib.parse.unquote(part.split("=",1)[1])
-        break
+COOKIE_NAME = "hw2_state"
 
-print("Content-Type: text/html; charset=utf-8\r\n\r\n")
-print(f"""<!doctype html><html><body>
-<h1>State (Python)</h1>
-<p>Stored value: <b>{val}</b></p>
+def parse_cookies(cookie_header: str) -> dict:
+    out = {}
+    for part in cookie_header.split(";"):
+        part = part.strip()
+        if "=" in part:
+            k, v = part.split("=", 1)
+            out[k] = v
+    return out
 
-<form action="/cgi-bin/python/state-set-python.py" method="POST">
-  <input name="value" placeholder="set value">
-  <button type="submit">Save</button>
-</form>
+cookie_header = os.environ.get("HTTP_COOKIE", "")
+cookies = parse_cookies(cookie_header)
+raw = cookies.get(COOKIE_NAME, "")
+value = urllib.parse.unquote(raw) if raw else ""
 
-<p><a href="/cgi-bin/python/state-clear-python.py">Clear</a></p>
+print("Content-Type: text/html; charset=utf-8")
+print()
+print(f"""<!doctype html>
+<html><body>
+<h1>State View (Python)</h1>
+{"<p>Saved: <b>" + value + "</b></p>" if value else "<p>No state saved.</p>"}
+<p>
+  <a href="state-set-python.py">Set</a> |
+  <a href="state-clear-python.py">Clear</a>
+</p>
 </body></html>""")
