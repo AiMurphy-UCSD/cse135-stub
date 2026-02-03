@@ -2,29 +2,34 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net/url"
 	"os"
 )
 
-func main() {
-	method := os.Getenv("REQUEST_METHOD")
-	rawBytes, _ := io.ReadAll(os.Stdin)
-	raw := string(rawBytes)
-	qs := os.Getenv("QUERY_STRING")
+const cookieName = "hw2_state"
 
-	var data url.Values
-	if method == "GET" {
-		data, _ = url.ParseQuery(qs)
-	} else {
-		data, _ = url.ParseQuery(raw)
+func main() {
+	qs := os.Getenv("QUERY_STRING")
+	values, _ := url.ParseQuery(qs)
+	name := values.Get("name")
+
+	if name == "" {
+		fmt.Print("Content-Type: text/html; charset=utf-8\r\n\r\n")
+		fmt.Print(`<!doctype html><html><body>
+<h1>Set State (Go)</h1>
+<form method="GET" action="state-set-go">
+  <label>Name: <input name="name"></label>
+  <button type="submit">Save</button>
+</form>
+<p><a href="state-view-go">View state</a></p>
+</body></html>`)
+		return
 	}
 
-	value := data.Get("value")
-	value = url.QueryEscape(value)
+	escaped := url.QueryEscape(name)
 
-	fmt.Println("Status: 302 Found")
-	fmt.Println("Set-Cookie: hw2_state=" + value + "; Path=/; HttpOnly; SameSite=Lax")
-	fmt.Println("Location: /cgi-bin/go/state-view-go")
-	fmt.Println()
+	fmt.Print("Status: 302 Found\r\n")
+	fmt.Printf("Set-Cookie: %s=%s; Path=/; HttpOnly; SameSite=Lax\r\n", cookieName, escaped)
+	fmt.Print("Location: /cgi-bin/go/state-view-go\r\n")
+	fmt.Print("Content-Type: text/html; charset=utf-8\r\n\r\n")
 }

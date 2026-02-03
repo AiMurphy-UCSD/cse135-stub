@@ -7,26 +7,37 @@ import (
 	"strings"
 )
 
-func main() {
-	cookie := os.Getenv("HTTP_COOKIE")
-	val := "(not set)"
-	for _, part := range strings.Split(cookie, ";") {
-		part = strings.TrimSpace(part)
-		if strings.HasPrefix(part, "hw2_state=") {
-			val = strings.TrimPrefix(part, "hw2_state=")
-			decoded, _ := url.QueryUnescape(val)
-			val = decoded
+const cookieName = "hw2_state"
+
+func parseCookies(h string) map[string]string {
+	out := map[string]string{}
+	parts := strings.Split(h, ";")
+	for _, p := range parts {
+		p = strings.TrimSpace(p)
+		if eq := strings.Index(p, "="); eq != -1 {
+			out[p[:eq]] = p[eq+1:]
 		}
 	}
+	return out
+}
+
+func main() {
+	cookieHeader := os.Getenv("HTTP_COOKIE")
+	cookies := parseCookies(cookieHeader)
+	raw := cookies[cookieName]
+	val, _ := url.QueryUnescape(raw)
 
 	fmt.Print("Content-Type: text/html; charset=utf-8\r\n\r\n")
-	fmt.Printf(`<!doctype html><html><body>
-<h1>State (Go)</h1>
-<p>Stored value: <b>%s</b></p>
-<form action="/cgi-bin/go/state-set-go" method="POST">
-  <input name="value" placeholder="set value">
-  <button type="submit">Save</button>
-</form>
-<p><a href="/cgi-bin/go/state-clear-go">Clear</a></p>
-</body></html>`, val)
+	fmt.Print("<!doctype html><html><body>")
+	fmt.Print("<h1>State View (Go)</h1>")
+	if raw != "" {
+		fmt.Printf("<p>Saved: <b>%s</b></p>", val)
+	} else {
+		fmt.Print("<p>No state saved.</p>")
+	}
+	fmt.Print(`<p>
+  <a href="state-set-go">Set</a> |
+  <a href="state-clear-go">Clear</a>
+</p>`)
+	fmt.Print("</body></html>")
 }
