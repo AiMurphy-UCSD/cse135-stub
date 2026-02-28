@@ -5,8 +5,8 @@ header("Content-Type: application/json; charset=utf-8");
 
 $DB_HOST = "localhost";
 $DB_NAME = "cse135_analytics";
-$DB_USER = "root";
-$DB_PASS = getenv("MYSQL_ROOT_PASSWORD") ?: ""; // if you don't use env, set it directly (not recommended)
+$DB_USER = "cse135";
+$DB_PASS = "StrongPasswordHere"; // if you don't use env, set it directly (not recommended)
 
 try {
   $pdo = new PDO(
