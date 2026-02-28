@@ -74,22 +74,30 @@ try {
   }
 
   if ($method === "POST" && $id === null) {
-    $body = readJsonBody();
-    $session_id = $body["session_id"] ?? null;
-    $event_type  = $body["event_type"] ?? null;
-    $page_url    = $body["page_url"] ?? null;
+  $body = readJsonBody();
 
-    if (!$session_id || !$event_type || !$page_url) {
-      http_response_code(400);
-      echo json_encode(["error" => "session_id, event_type, page_url required"]);
-      exit;
-    }
+  $session_id = $body["session_id"] ?? null;
+  $event_type = $body["event_type"] ?? null;
+  $page_url   = $body["page_url"] ?? null;
 
-    $stmt = $pdo->prepare("INSERT INTO events (session_id, event_type, page_url) VALUES (?, ?, ?)");
-    $stmt->execute([$session_id, $event_type, $page_url]);
-
-    echo json_encode(["ok" => true, "id" => (int)$pdo->lastInsertId()]);
+  if (!$session_id || !$event_type) {
+    http_response_code(400);
+    echo json_encode(["error" => "session_id and event_type required"]);
     exit;
+  }
+
+  // Store the entire request body as payload (minus redundant fields if you want)
+  // Easiest: store everything.
+  $payload = json_encode($body, JSON_UNESCAPED_SLASHES);
+
+  $stmt = $pdo->prepare(
+    "INSERT INTO events (session_id, event_type, page_url, payload)
+     VALUES (?, ?, ?, CAST(? AS JSON))"
+  );
+  $stmt->execute([$session_id, $event_type, $page_url, $payload]);
+
+  echo json_encode(["ok" => true, "id" => (int)$pdo->lastInsertId()]);
+  exit;
   }
 
   if ($method === "PUT" && $id !== null) {
