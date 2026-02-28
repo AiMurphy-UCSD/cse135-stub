@@ -101,32 +101,44 @@ try {
   }
 
   if ($method === "PUT" && $id !== null) {
-    $body = readJsonBody();
-    // allow updating event_type and page_url (minimal)
-    $event_type = $body["event_type"] ?? null;
-    $page_url   = $body["page_url"] ?? null;
+  $body = readJsonBody();
 
-    if (!$event_type && !$page_url) {
-      http_response_code(400);
-      echo json_encode(["error" => "Provide event_type and/or page_url"]);
-      exit;
-    }
+  $event_type = $body["event_type"] ?? null;
+  $page_url   = $body["page_url"] ?? null;
+  $payloadArr = $body["payload"] ?? null;
 
-    // dynamic update
-    $fields = [];
-    $vals = [];
-
-    if ($event_type) { $fields[] = "event_type = ?"; $vals[] = $event_type; }
-    if ($page_url)   { $fields[] = "page_url = ?";   $vals[] = $page_url; }
-
-    $vals[] = $id;
-
-    $sql = "UPDATE events SET " . implode(", ", $fields) . " WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($vals);
-
-    echo json_encode(["ok" => true]);
+  if (!$event_type && !$page_url && !$payloadArr) {
+    http_response_code(400);
+    echo json_encode(["error" => "Provide event_type, page_url, or payload"]);
     exit;
+  }
+
+  $fields = [];
+  $vals = [];
+
+  if ($event_type) {
+    $fields[] = "event_type = ?";
+    $vals[] = $event_type;
+  }
+
+  if ($page_url) {
+    $fields[] = "page_url = ?";
+    $vals[] = $page_url;
+  }
+
+  if ($payloadArr !== null) {
+    $fields[] = "payload = CAST(? AS JSON)";
+    $vals[] = json_encode($payloadArr, JSON_UNESCAPED_SLASHES);
+  }
+
+  $vals[] = $id;
+
+  $sql = "UPDATE events SET " . implode(", ", $fields) . " WHERE id = ?";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($vals);
+
+  echo json_encode(["ok" => true]);
+  exit;
   }
 
   if ($method === "DELETE" && $id !== null) {
