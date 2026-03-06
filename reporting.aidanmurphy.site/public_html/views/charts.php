@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . "/../app/auth.php";
-require __DIR__ . "/../app/db.php";
+require_once __DIR__ . "/../app/auth.php";
+require_once __DIR__ . "/../app/db.php";
 require_login();
 
 $pdo = db();
