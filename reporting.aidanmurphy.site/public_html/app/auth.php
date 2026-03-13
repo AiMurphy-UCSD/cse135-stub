@@ -1,41 +1,110 @@
 <?php
 declare(strict_types=1);
 
-function start_session(): void {
-  if (session_status() === PHP_SESSION_NONE) {
-    // safer cookie defaults
-    session_set_cookie_params([
-      "httponly" => true,
-      "secure" => true,
-      "samesite" => "Lax",
-    ]);
-    session_start();
-  }
-}
+if (!function_exists('start_session')) {
+    function start_session(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_set_cookie_params([
+                "httponly" => true,
+                "secure" => true,
+                "samesite" => "Lax",
+            ]);
+            session_start();
+        }
+    }
 
-function is_logged_in(): bool {
-  start_session();
-  return !empty($_SESSION["user"]);
-}
+    function is_logged_in(): bool {
+        start_session();
+        return !empty($_SESSION["user_id"]);
+    }
 
-function require_login(): void {
-  if (!is_logged_in()) {
-    header("Location: /login.php");
-    exit;
-  }
-}
+    function require_login(): void {
+        if (!is_logged_in()) {
+            header("Location: /login.php");
+            exit;
+        }
+    }
 
-function login_user(string $username): void {
-  start_session();
-  $_SESSION["user"] = $username;
-}
+    function current_user_id(): ?int {
+        start_session();
+        return $_SESSION["user_id"] ?? null;
+    }
 
-function logout_user(): void {
-  start_session();
-  $_SESSION = [];
-  if (ini_get("session.use_cookies")) {
-    $p = session_get_cookie_params();
-    setcookie(session_name(), "", time() - 42000, $p["path"], $p["domain"], $p["secure"], $p["httponly"]);
-  }
-  session_destroy();
+    function current_username(): ?string {
+        start_session();
+        return $_SESSION["username"] ?? null;
+    }
+
+    function current_user_role(): ?string {
+        start_session();
+        return $_SESSION["role"] ?? null;
+    }
+
+    function current_user_sections(): array {
+        start_session();
+        return $_SESSION["sections"] ?? [];
+    }
+
+    function has_role(string $role): bool {
+        return current_user_role() === $role;
+    }
+
+    function require_role(string $role): void {
+        require_login();
+        if (!has_role($role)) {
+            http_response_code(403);
+            echo "403 Forbidden";
+            exit;
+        }
+    }
+
+    function can_access_section(string $section): bool {
+        require_login();
+
+        $role = current_user_role();
+
+        if ($role === "super_admin") {
+            return true;
+        }
+
+        if ($role === "viewer") {
+            return false;
+        }
+
+        if ($role === "analyst") {
+            $sections = current_user_sections();
+            return in_array($section, $sections, true);
+        }
+
+        return false;
+    }
+
+    function require_section(string $section): void {
+        require_login();
+        if (!can_access_section($section)) {
+            http_response_code(403);
+            echo "403 Forbidden";
+            exit;
+        }
+    }
+
+    function logout_user(): void {
+        start_session();
+        $_SESSION = [];
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                "",
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        session_destroy();
+    }
 }
