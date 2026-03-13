@@ -11,7 +11,7 @@ function db(): PDO {
   $pdo = new PDO(
     "mysql:host=127.0.0.1;dbname=cse135_analytics;charset=utf8mb4",
     "cse135",
-    "StrongPasswordHere",
+    "Murphy2003",
     [
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
       PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
