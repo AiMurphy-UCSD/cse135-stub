@@ -20,24 +20,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($u === "" || $p === "") {
     $error = "Username and password are required.";
   } else {
-    $stmt = db()->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$u]);
-    $user = $stmt->fetch();
+    try {
+      $stmt = db()->prepare("SELECT * FROM users WHERE username = ?");
+      $stmt->execute([$u]);
+      $user = $stmt->fetch();
 
-    if ($user && password_verify($p, $user["password_hash"])) {
-      session_regenerate_id(true);
+      echo "<pre>";
+      var_dump($u);
+      var_dump($user);
+      if ($user) {
+        var_dump(password_verify($p, $user["password_hash"]));
+      }
+      echo "</pre>";
 
-      $_SESSION["user_id"] = $user["id"];
-      $_SESSION["username"] = $user["username"];
-      $_SESSION["role"] = $user["role"];
-      $_SESSION["sections"] = $user["sections"]
-        ? json_decode($user["sections"], true)
-        : [];
+      if ($user && password_verify($p, $user["password_hash"])) {
+        session_regenerate_id(true);
 
-      header("Location: /index.php");
-      exit;
-    } else {
-      $error = "Invalid username or password.";
+        $_SESSION["user_id"] = $user["id"];
+        $_SESSION["username"] = $user["username"];
+        $_SESSION["role"] = $user["role"];
+        $_SESSION["sections"] = $user["sections"]
+          ? json_decode($user["sections"], true)
+          : [];
+
+        header("Location: /index.php");
+        exit;
+      } else {
+        $error = "Invalid username or password.";
+      }
+    } catch (Throwable $e) {
+      $error = "Debug exception: " . $e->getMessage();
     }
   }
 }
