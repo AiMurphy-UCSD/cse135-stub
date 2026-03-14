@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>403 Forbidden</title>
+</head>
+<body>
+    <h1>403 Forbidden</h1>
+    <p>You do not have permission to access this page.</p>
+    <p><a href="/index.php">Return to dashboard</a></p>
+</body>
+</html>
