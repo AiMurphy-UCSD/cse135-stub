@@ -42,24 +42,25 @@ include __DIR__ . "/partials/header.php";
 include __DIR__ . "/partials/nav.php";
 ?>
 
-<h1>Saved Reports</h1>
-<p>
-    This page provides access to the available analytics reports. Each report contains a chart,
-    a supporting data table, and analyst commentary summarizing the meaning of the data.
-</p>
+<div class="mb-4">
+    <h1 class="mb-1">Saved Reports</h1>
+    <p class="text-muted">Each report contains a chart, a supporting data table, and analyst commentary.</p>
+</div>
 
-<?php if (empty($visibleReports)): ?>
-    <p>No reports are available for your account at this time.</p>
-<?php else: ?>
-    <div style="display:flex; flex-wrap:wrap; gap:20px;">
-        <?php foreach ($visibleReports as $report): ?>
-            <div style="border:1px solid #ccc; padding:15px; width:300px;">
-                <h2><?= htmlspecialchars($report["title"]) ?></h2>
-                <p><?= htmlspecialchars($report["description"]) ?></p>
-                <p><a href="<?= htmlspecialchars($report["link"]) ?>">Open Report</a></p>
+<div class="row g-4">
+    <?php foreach ($visibleReports as $report): ?>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><?= htmlspecialchars($report["title"]) ?></h5>
+                    <p class="card-text"><?= htmlspecialchars($report["description"]) ?></p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a class="btn btn-primary" href="<?= htmlspecialchars($report["link"]) ?>">Open Report</a>
+                </div>
             </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
 
 <?php include __DIR__ . "/partials/footer.php"; ?>

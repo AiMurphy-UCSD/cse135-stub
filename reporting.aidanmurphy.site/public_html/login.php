@@ -20,36 +20,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($u === "" || $p === "") {
     $error = "Username and password are required.";
   } else {
-    try {
-      $stmt = db()->prepare("SELECT * FROM users WHERE username = ?");
-      $stmt->execute([$u]);
-      $user = $stmt->fetch();
+    $stmt = db()->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$u]);
+    $user = $stmt->fetch();
 
-      echo "<pre>";
-      var_dump($u);
-      var_dump($user);
-      if ($user) {
-        var_dump(password_verify($p, $user["password_hash"]));
-      }
-      echo "</pre>";
+    if ($user && password_verify($p, $user["password_hash"])) {
+      session_regenerate_id(true);
 
-      if ($user && password_verify($p, $user["password_hash"])) {
-        session_regenerate_id(true);
+      $_SESSION["user_id"] = $user["id"];
+      $_SESSION["username"] = $user["username"];
+      $_SESSION["role"] = $user["role"];
+      $_SESSION["sections"] = $user["sections"]
+        ? json_decode($user["sections"], true)
+        : [];
 
-        $_SESSION["user_id"] = $user["id"];
-        $_SESSION["username"] = $user["username"];
-        $_SESSION["role"] = $user["role"];
-        $_SESSION["sections"] = $user["sections"]
-          ? json_decode($user["sections"], true)
-          : [];
-
-        header("Location: /index.php");
-        exit;
-      } else {
-        $error = "Invalid username or password.";
-      }
-    } catch (Throwable $e) {
-      $error = "Debug exception: " . $e->getMessage();
+      header("Location: /index.php");
+      exit;
+    } else {
+      $error = "Invalid username or password.";
     }
   }
 }
@@ -58,29 +46,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reporting Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Reporting Login</h1>
+<body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h3 mb-3 text-center">Analytics Login</h1>
+            <p class="text-muted text-center">Sign in to access reporting tools</p>
 
-  <?php if ($error): ?>
-    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
-  <?php endif; ?>
+            <?php if ($error): ?>
+              <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
 
-  <form method="post" action="/login.php">
-    <label>
-      Username
-      <input type="text" name="username" required>
-    </label>
-    <br><br>
+            <form method="post" action="/login.php">
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input class="form-control" type="text" name="username" required>
+              </div>
 
-    <label>
-      Password
-      <input type="password" name="password" required>
-    </label>
-    <br><br>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input class="form-control" type="password" name="password" required>
+              </div>
 
-    <button type="submit">Login</button>
-  </form>
+              <button class="btn btn-primary w-100" type="submit">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
