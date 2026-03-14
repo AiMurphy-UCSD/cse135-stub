@@ -288,11 +288,13 @@
     });
 
     window.addEventListener("unhandledrejection", (e) => {
-      enqueue({
-        ...buildBasePayload("unhandledrejection"),
-        reason: safeString(e.reason && (e.reason.stack || e.reason.message || e.reason))
-      });
-    });
+  enqueue({
+    ...buildBasePayload("error"),
+    subtype: "unhandledrejection",
+    reason: safeString(e.reason && (e.reason.stack || e.reason.message || e.reason))
+  });
+});
+
   }
 
   // =========================
@@ -440,16 +442,24 @@
       pageEnterMs
     });
 
-    // After window load, send static + performance (HW requirement)
+    // After window load, send static + performance
     window.addEventListener("load", async () => {
       const staticData = await collectStatic();
       const perfData = collectPerformance();
 
+      // Static/pageview event
       enqueue({
         ...buildBasePayload("pageview"),
-        static: staticData,
-        performance: perfData
+        static: staticData
       });
+
+      // Separate performance event so it maps into the performance report
+      if (perfData) {
+        enqueue({
+          ...buildBasePayload("performance"),
+          metrics: perfData
+        });
+      }
 
       flush("initial");
     });

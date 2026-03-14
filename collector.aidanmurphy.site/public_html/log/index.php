@@ -96,7 +96,7 @@ function mapEventType(string $type): string {
         return "performance";
     }
 
-    if (in_array($type, ["error", "js_error"], true)) {
+    if (in_array($type, ["error", "js_error", "unhandledrejection"], true)) {
         return "error";
     }
 
