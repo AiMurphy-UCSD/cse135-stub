@@ -1,14 +1,15 @@
 /* collector.js
  * Host this at: https://collector.aidanmurphy.site/collector.js
  * Receives at:  https://collector.aidanmurphy.site/log  (configure in COLLECT_ENDPOINT)
- */
+ */ 
+
 (function () {
   "use strict";
 
   // =========================
   // CONFIG
   // =========================
-  const COLLECT_ENDPOINT = "https://collector.aidanmurphy.site/log";
+  const COLLECT_ENDPOINT = "https://collector.aidanmurphy.site/log/";
   const FLUSH_INTERVAL_MS = 5000;
   const IDLE_THRESHOLD_MS = 2000;
   const MOUSE_THROTTLE_MS = 100;   // mousemove throttle
