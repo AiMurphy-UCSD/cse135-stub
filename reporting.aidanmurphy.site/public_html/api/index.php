@@ -6,7 +6,7 @@ header("Content-Type: application/json; charset=utf-8");
 $DB_HOST = "127.0.0.1"; // or "localhost" depending on your setup
 $DB_NAME = "cse135_analytics";
 $DB_USER = "cse135";
-$DB_PASS = "StrongPasswordHere"; // if you don't use env, set it directly (not recommended)
+$DB_PASS = "Murphy2003"; // if you don't use env, set it directly (not recommended)
 
 try {
   $pdo = new PDO(
