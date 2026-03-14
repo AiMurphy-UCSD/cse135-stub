@@ -5,6 +5,8 @@ require_once __DIR__ . "/app/auth.php";
 use Dompdf\Dompdf;
 
 require_login();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 $title = $_GET["report"] ?? "report";
 
