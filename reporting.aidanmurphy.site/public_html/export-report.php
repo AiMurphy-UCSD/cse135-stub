@@ -21,13 +21,7 @@ $dompdf->render();
 
 $file = "exports/report-" . time() . ".pdf";
 
-$bytesWritten = file_put_contents($filepath, $dompdf->output());
-
-if ($bytesWritten === false) {
-    http_response_code(500);
-    echo "Failed to save PDF export.";
-    exit;
-}
+file_put_contents($file, $dompdf->output());
 
 echo "<p>Report exported successfully.</p>";
 echo "<a href='/$file'>Download PDF</a>";
