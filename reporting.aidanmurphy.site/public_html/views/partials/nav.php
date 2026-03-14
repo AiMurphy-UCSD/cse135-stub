@@ -5,7 +5,9 @@ start_session();
 $role = current_user_role();
 ?>
 <nav>
-    <a href="/index.php">Dashboard</a> |
+    <?php if ($role !== "viewer"): ?>
+        <a href="/index.php">Dashboard</a> |
+    <?php endif; ?>
 
     <?php if ($role === "super_admin" || can_access_section("performance")): ?>
         <a href="/performance.php">Performance</a> |
@@ -20,6 +22,11 @@ $role = current_user_role();
     <?php endif; ?>
 
     <a href="/reports.php">Reports</a> |
+
+    <?php if ($role !== "viewer"): ?>
+        <a href="/table.php">Table</a> |
+        <a href="/charts.php">Charts</a> |
+    <?php endif; ?>
 
     <?php if ($role === "super_admin"): ?>
         <a href="/admin/users.php">Manage Users</a> |

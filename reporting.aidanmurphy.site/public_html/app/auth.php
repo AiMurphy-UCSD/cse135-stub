@@ -53,7 +53,7 @@ if (!function_exists('start_session')) {
         require_login();
         if (!has_role($role)) {
             http_response_code(403);
-            echo "403 Forbidden";
+            include __DIR__ . "/../views/403.php";
             exit;
         }
     }
@@ -72,20 +72,22 @@ if (!function_exists('start_session')) {
         }
 
         if ($role === "analyst") {
-            $sections = current_user_sections();
-            return in_array($section, $sections, true);
+            return in_array($section, current_user_sections(), true);
         }
 
         return false;
     }
 
     function require_section(string $section): void {
-        require_login();
         if (!can_access_section($section)) {
             http_response_code(403);
-            echo "403 Forbidden";
+            include __DIR__ . "/../views/403.php";
             exit;
         }
+    }
+
+    function is_viewer(): bool {
+        return current_user_role() === "viewer";
     }
 
     function logout_user(): void {
